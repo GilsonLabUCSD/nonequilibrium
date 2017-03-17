@@ -1,4 +1,4 @@
-import maptlotlib as mpl
+import matplotlib as mpl
 mpl.use('Agg')
 
 from simulation import *
