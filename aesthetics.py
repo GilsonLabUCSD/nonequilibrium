@@ -1,4 +1,5 @@
 import matplotlib as mpl
+mpl.use('Agg')  # For generating figures in docker
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from matplotlib.colors import colorConverter
