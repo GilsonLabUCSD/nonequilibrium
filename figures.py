@@ -1,3 +1,6 @@
+import maptlotlib as mpl
+mpl.use('Agg')
+
 from simulation import *
 from aesthetics import *
 from plot import *

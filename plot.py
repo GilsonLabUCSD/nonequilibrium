@@ -37,7 +37,7 @@ def plot_input(this, save=False, filename=None):
     paper_plot(fig, scientific=False)
     if save:
         plt.savefig(filename + '.png', dpi=300, bbox_inches='tight')
-
+    return fig
 
 def plot_energy(this, save=False, filename=None):
     """
@@ -64,7 +64,7 @@ def plot_energy(this, save=False, filename=None):
     paper_plot(fig, scientific=False)
     if save:
         plt.savefig(filename + '.png', dpi=300, bbox_inches='tight')
-        # return fig
+    return fig
 
 
 def plot_ss(this, save=False, filename=None):
@@ -93,7 +93,7 @@ def plot_ss(this, save=False, filename=None):
     paper_plot(fig, scientific=False)
     if save:
         plt.savefig(filename + '.png', dpi=300, bbox_inches='tight')
-        # return fig
+    return fig
 
 
 def print_parameter(label, value, unit):
@@ -160,6 +160,7 @@ def plot_flux(this, save=False, filename=None):
     paper_plot(fig, scientific=False)
     if save:
         plt.savefig(filename + '.png', dpi=300, bbox_inches='tight')
+    return fig
 
 
 def plot_load(this, save=False, filename=None):
@@ -191,6 +192,7 @@ def plot_load(this, save=False, filename=None):
     paper_plot(fig, scientific=False)
     if save:
         plt.savefig(filename + '.png', dpi=300, bbox_inches='tight')
+    return fig
 
 
 def plot_fluxes_and_velocity(concentrations, directional_flux, reciprocating_flux, velocity,
@@ -255,6 +257,7 @@ def plot_fluxes_and_velocity(concentrations, directional_flux, reciprocating_flu
     ax1.set_xlim([10 ** -6, 10 ** 0])
     ax1.set_xticks([10 ** -6, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2, 10 ** -1, 10 ** 0])
     fig.patch.set_facecolor('white')
+    return fig
 
 
 def plot_flux_over_threshold(concentrations, number_above_thresholds, colors, names,
@@ -302,6 +305,7 @@ def plot_flux_over_threshold(concentrations, number_above_thresholds, colors, na
     ax.set_xlim([xmin, xmax])
     ax.set_ylim([ymin, ymax])
     paper_plot(fig)
+    return fig
 
 
 def plot_load_over_threshold(concentrations, number_above_thresholds, colors, names,
@@ -339,6 +343,7 @@ def plot_load_over_threshold(concentrations, number_above_thresholds, colors, na
     ax.set_xlim([xmin, xmax])
     ax.set_ylim([ymin, ymax])
     paper_plot(fig)
+    return fig
 
 
 # Below, these helper functions are necessary for the summary plots that are designed mostly to read in pandas
