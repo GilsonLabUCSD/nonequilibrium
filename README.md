@@ -1,4 +1,5 @@
-# Python source code to analyze data in "The ubiquity of directed and reciprocating motion in enzymes out of equilibrium" by David R. Slochower and Michael K. Gilson
+# Source code for "The ubiquity of directional and reciprocating motion in enzymes out of equilibrium"
+These `jupyer` notebooks, and associated `python` source code, can be used to generate the figures in *The ubiquity of directional and reciprocating motions in enzymes out of equilibrium* by Slochower and Gilson, 2017. 
 
 ## Step 0: MD simulations
 This code assumes that two separate equilibrium simlations have been completed for each system: one in the apo or unbound form, and one in the substrate-bound form.
@@ -36,3 +37,5 @@ We can then use the built-in plotting routines to look at various details.
 
 ### Generate statistics for a group of torsions
 The easiest way to look at distributions, such as the number of angles over a flux, power, or stall torque threshold, is to first create the 
+
+The file `scan-concentrations` is a good template for how to population a `pandas` dataframe with flux, power, and torque for a group of files over a range of concentration. These can then be used to make complex views into the data, such as the number of torsions with $J < 1$ and $J_R > 1$ at a particular concentration.
