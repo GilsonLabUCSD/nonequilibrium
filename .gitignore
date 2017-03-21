@@ -50,3 +50,6 @@ Thumbs.db
 
 # pylintrc
 .pylintrc
+
+# jupyter notebook checkpoints
+.ipynb_checkpoints
