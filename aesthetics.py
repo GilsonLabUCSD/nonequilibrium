@@ -1,3 +1,8 @@
+"""
+General functions for controlling the aesthetics of figures and
+ensuring consistency.
+"""
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
@@ -12,9 +17,12 @@ def prepare_plot():
     This function should be called before `paper_plot`.
     """
     sns.set()
-    # Increase font size
+    # Increase font size and linewidth
     sns.set_context("notebook", font_scale=2, rc={"lines.linewidth": 5})
     sns.set_style("white")
+    # Use LaTeX, setup to use Helvetica. This can be safely commented to make
+    # the installation footprint of running this code smaller -- for example,
+    # in Docker.
     mpl.rc('text', usetex=True)
     mpl.rcParams['text.latex.preamble'] = [
         r'\usepackage{amsmath}',
@@ -29,7 +37,7 @@ def prepare_plot():
 
 def paper_plot(fig, adjustment=0, scientific=False):
     """
-    Take a prepared figure and make additional adjustments for inclusion in manuscript,
+    Take a prepared figure and make additional adjustments for inclusion in manuscript:
     mostly tick thickness, length, and label padding, and include only the left and the bottom
     axis spines. It would be nice to force the axes to end on a major tick, but I haven't
     figured out how to do that yet.
@@ -74,14 +82,15 @@ def paper_plot(fig, adjustment=0, scientific=False):
             x0, x1, y0, y1 = ax.axis()
             ax.xaxis((x0 - adjustment,
                       x1 + adjustment,
-                      ))
+                     ))
         # Make axes thicker
         for axis in ['top', 'bottom', 'left', 'right']:
             ax.spines[axis].set_linewidth(2)
 
 
-def generic_plot(x, y, xlabel=None, ylabel=None, scientific=False, c=None, panel_label=None,
-                 panel_xoffset=-0.24, panel_yoffset=0.95):
+def generic_plot(x, y, xlabel=None, ylabel=None, scientific=False, 
+                 c=None, panel_label=None, panel_xoffset=-0.24, 
+                 panel_yoffset=0.95):
     """
     Quickly plot some data in a consistent style, useful for interactive explorations.
     :param x: List or array of data
@@ -96,8 +105,8 @@ def generic_plot(x, y, xlabel=None, ylabel=None, scientific=False, c=None, panel
     :return:
     """
     fig = plt.figure(figsize=(6 * 1.2, 6))
-    gs = GridSpec(1, 1, wspace=0.2, hspace=0.5)
-    ax = plt.subplot(gs[0, 0])
+    grid = GridSpec(1, 1, wspace=0.2, hspace=0.5)
+    ax = plt.subplot(grid[0, 0])
     if c:
         ax.plot(x, y, 'o', markersize=10, markeredgecolor='k',
                 markeredgewidth=0.8, alpha=0.5, mfc=c)
@@ -111,7 +120,8 @@ def generic_plot(x, y, xlabel=None, ylabel=None, scientific=False, c=None, panel
     if scientific:
         pretty_label(ax)
     if panel_label:
-        ax.annotate(r'\textbf{{ {} }}'.format(panel_label), xy=(0, 0), xytext=(panel_xoffset, panel_yoffset),
+        ax.annotate(r'\textbf{{ {} }}'.format(panel_label), xy=(0, 0), 
+                    xytext=(panel_xoffset, panel_yoffset),
                     xycoords='axes fraction', fontsize=24, fontweight='bold')
     ax.margins(None)
     paper_plot(fig)
@@ -172,5 +182,6 @@ def panel_label(panel_label=None,
     :param panel_yoffset: Figure label $y$ position fine tuning
     """
     ax = plt.gca()
-    ax.annotate(r'\textbf{{ {} }}'.format(panel_label), xy=(0, 0), xytext=(panel_xoffset, panel_yoffset),
+    ax.annotate(r'\textbf{{ {} }}'.format(panel_label), xy=(0, 0), 
+                xytext=(panel_xoffset, panel_yoffset),
                 xycoords='axes fraction', fontsize=24, fontweight='bold')

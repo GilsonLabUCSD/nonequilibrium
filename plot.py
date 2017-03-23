@@ -1,3 +1,11 @@
+"""
+These functions used to be class members, but were refactored for modularity.
+I wasn't sure the best approach at first, so there is some redundant re-scoping
+of variables, to define local copies of bins and colors.
+By pulling these out of the class, we can use these routines to examine
+hypothetical data or toy models.
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -7,15 +15,11 @@ from tqdm import tqdm
 from simulation import *
 
 
+
 def plot_input(this, save=False, filename=None):
     """
-    This function plots the unbound and bound histograms as a function of dihedral angle. The input histograms
+    Plots the unbound and bound histograms as a function of dihedral angle. The input histograms
     are taken to be normalized populations derived from MD simulations.
-    :param this: an object of class Simulation that contains `unbound_population` and `bound_population` attributes,
-    at minimum
-    :param save: whether to save the plot to a file
-    :param filename: name of file
-    :return:
     """
 
     bins = this.bins
@@ -25,13 +29,13 @@ def plot_input(this, save=False, filename=None):
     bound_clr = this.bound_clr
 
     fig = plt.figure(figsize=(6 * 1.2, 6))
-    gs = GridSpec(1, 1, wspace=0.2, hspace=0.5)
-    ax1 = plt.subplot(gs[0, 0])
+    grid = GridSpec(1, 1, wspace=0.2, hspace=0.5)
+    ax1 = plt.subplot(grid[0, 0])
     ax1.plot(range(bins), unbound_population, c=unbound_clr)
     ax1.plot(range(bins), bound_population, c=bound_clr, ls='--')
     ax1.set_xticks([0, bins / 4, bins / 2, 3 * bins / 4, bins])
     ax1.set_xticklabels(
-            [r'$-\pi$', r'$-\frac{1}{2}\pi{}$', r'$0$', r'$\frac{1}{2}\pi$', r'$\pi$'])
+        [r'$-\pi$', r'$-\frac{1}{2}\pi{}$', r'$0$', r'$\frac{1}{2}\pi$', r'$\pi$'])
     ax1.set_xlabel(r'$\theta$ (rad)')
     ax1.set_ylabel(r'$p$ (input population)')
     paper_plot(fig, scientific=False)
@@ -41,7 +45,7 @@ def plot_input(this, save=False, filename=None):
 
 def plot_energy(this, save=False, filename=None):
     """
-    This function plots the unbound and bound energies (i.e., chemical potentials)
+    Plots the unbound and bound energies -- i.e., chemical potentials --
     associated with a Simulation object.
     """
 
@@ -52,13 +56,13 @@ def plot_energy(this, save=False, filename=None):
     bound_clr = this.bound_clr
 
     fig = plt.figure(figsize=(6 * 1.2, 6))
-    gs = GridSpec(1, 1, wspace=0.2, hspace=0.5)
-    ax1 = plt.subplot(gs[0, 0])
+    grid = GridSpec(1, 1, wspace=0.2, hspace=0.5)
+    ax1 = plt.subplot(grid[0, 0])
     ax1.plot(range(bins), unbound_energy, c=unbound_clr)
     ax1.plot(range(bins), bound_energy, c=bound_clr, ls='--')
     ax1.set_xticks([0, bins / 4, bins / 2, 3 * bins / 4, bins])
     ax1.set_xticklabels(
-            [r'$-\pi$', r'$-\frac{1}{2}\pi{}$', r'$0$', r'$\frac{1}{2}\pi$', r'$\pi$'])
+        [r'$-\pi$', r'$-\frac{1}{2}\pi{}$', r'$0$', r'$\frac{1}{2}\pi$', r'$\pi$'])
     ax1.set_xlabel(r'$\theta$ (rad)')
     ax1.set_ylabel(r'$\mu$ (kcal mol$^{-1}$)')
     paper_plot(fig, scientific=False)
@@ -69,7 +73,7 @@ def plot_energy(this, save=False, filename=None):
 
 def plot_ss(this, save=False, filename=None):
     """
-    This function plots the nonequilibrium steady-state distribution associated
+    Plots the nonequilibrium steady-state distribution associated
     with a Simulation object.
     By default, this will plot the eigenvector-derived steady-state distribution.
     """
@@ -81,13 +85,13 @@ def plot_ss(this, save=False, filename=None):
     bound_clr = this.bound_clr
 
     fig = plt.figure(figsize=(6 * 1.2, 6))
-    gs = GridSpec(1, 1, wspace=0.2, hspace=0.5)
-    ax1 = plt.subplot(gs[0, 0])
+    grid = GridSpec(1, 1, wspace=0.2, hspace=0.5)
+    ax1 = plt.subplot(grid[0, 0])
     ax1.plot(range(bins), unbound_ss, c=unbound_clr)
     ax1.plot(range(bins), bound_ss, c=bound_clr, ls='--')
     ax1.set_xticks([0, bins / 4, bins / 2, 3 * bins / 4, bins])
     ax1.set_xticklabels(
-            [r'$-\pi$', r'$-\frac{1}{2}\pi{}$', r'$0$', r'$\frac{1}{2}\pi$', r'$\pi$'])
+        [r'$-\pi$', r'$-\frac{1}{2}\pi{}$', r'$0$', r'$\frac{1}{2}\pi$', r'$\pi$'])
     ax1.set_xlabel(r'$\theta$ (rad)')
     ax1.set_ylabel(r'$p$ (probability)')
     paper_plot(fig, scientific=False)
@@ -98,18 +102,14 @@ def plot_ss(this, save=False, filename=None):
 
 def print_parameter(label, value, unit):
     """
-    This function pretty prints some class variables for the flux plots.
-    :param label:
-    :param value:
-    :param unit:
-    :return:
+    Pretty print some class variables for the flux plots.
     """
     print('{:<25} {:<+10.2e} {:<10}'.format(label, value, unit))
 
 
 def plot_flux(this, save=False, filename=None):
     """
-    This function plots the intrasurface flux separately and as a sum. The intrasurface flux
+    Plots the intrasurface flux separately and as a sum. The intrasurface flux
     is the directional flux. This also prints the simulation parameters.
     """
 
@@ -132,9 +132,9 @@ def plot_flux(this, save=False, filename=None):
     print_parameter('dt', dt, 'second')
     print('-' * 25)
     print_parameter('Intrasurface flux', np.mean(
-            unbound_flux + bound_flux), 'cycle second**-1')
+                    unbound_flux + bound_flux), 'cycle second**-1')
     print_parameter('Peak', np.max(
-            np.hstack((unbound_flux, bound_flux))), 'cycle second**-1')
+                    np.hstack((unbound_flux, bound_flux))), 'cycle second**-1')
     if load:
         print('-' * 25)
         applied_load = this.load_slope
@@ -143,8 +143,8 @@ def plot_flux(this, save=False, filename=None):
         print_parameter('Power generated', power, 'kcal mol**-1 second**-1')
 
     fig = plt.figure(figsize=(6 * 1.2, 6))
-    gs = GridSpec(1, 1, wspace=0.2, hspace=0.5)
-    ax1 = plt.subplot(gs[0, 0])
+    grid = GridSpec(1, 1, wspace=0.2, hspace=0.5)
+    ax1 = plt.subplot(grid[0, 0])
     ax1.plot(range(bins), unbound_flux, c=unbound_clr)
     ax1.plot(range(bins), bound_flux, c=bound_clr, ls='--')
     ax1.plot(range(bins), unbound_flux + bound_flux, 'o', c='k',
@@ -153,7 +153,7 @@ def plot_flux(this, save=False, filename=None):
     # ax1.set_xlim([0, bins])
     ax1.set_xticks([0, bins / 4, bins / 2, 3 * bins / 4, bins])
     ax1.set_xticklabels(
-            [r'$-\pi$', r'$-\frac{1}{2}\pi{}$', r'$0$', r'$\frac{1}{2}\pi$', r'$\pi$'])
+        [r'$-\pi$', r'$-\frac{1}{2}\pi{}$', r'$0$', r'$\frac{1}{2}\pi$', r'$\pi$'])
     ax1.set_xlabel(r'$\theta$ (rad)')
     ax1.set_ylabel('Flux $J$ (cycle s$^{-1}$)')
     ax1.legend(frameon=True, loc=1, framealpha=1.0, edgecolor='k')
@@ -165,7 +165,7 @@ def plot_flux(this, save=False, filename=None):
 
 def plot_load(this, save=False, filename=None):
     """
-    This function plots the unbound and bound energy surfaces with a constant added load.
+    Plots the unbound and bound energy surfaces with a constant added load.
     """
 
     bins = this.bins
@@ -175,8 +175,8 @@ def plot_load(this, save=False, filename=None):
     bound_clr = this.bound_clr
 
     fig = plt.figure(figsize=(6 * 1.2, 6))
-    gs = GridSpec(1, 1, wspace=0.2, hspace=0.5)
-    ax1 = plt.subplot(gs[0, 0])
+    grid = GridSpec(1, 1, wspace=0.2, hspace=0.5)
+    ax1 = plt.subplot(grid[0, 0])
     ax1.plot(range(bins), [unbound_energy[i] + this.load_function(i) for i in range(bins)],
              c='k', ls='--', lw=2)
     ax1.plot(range(bins), unbound_energy, c=unbound_clr)
@@ -186,7 +186,7 @@ def plot_load(this, save=False, filename=None):
 
     ax1.set_xticks([0, bins / 4, bins / 2, 3 * bins / 4, bins])
     ax1.set_xticklabels(
-            [r'$-\pi$', r'$-\frac{1}{2}\pi{}$', r'$0$', r'$\frac{1}{2}\pi$', r'$\pi$'])
+        [r'$-\pi$', r'$-\frac{1}{2}\pi{}$', r'$0$', r'$\frac{1}{2}\pi$', r'$\pi$'])
     ax1.set_xlabel(r'$\theta$ (rad)')
     ax1.set_ylabel(r'$\mu$ (kcal mol$^{-1}$)')
     paper_plot(fig, scientific=False)
@@ -198,19 +198,14 @@ def plot_load(this, save=False, filename=None):
 def plot_fluxes_and_velocity(concentrations, directional_flux, reciprocating_flux, velocity,
                              ymin1=None, ymax1=None, label=None):
     """
-
-    :param concentrations:
-    :param directional_flux:
-    :param reciprocating_flux:
-    :param velocity:
-    :param ymin1:
-    :param ymax1:
-    :param label:
+    Plots the flux and enzyme velocity as a function of concentration.
+    This is setup to replicate figures in the manuscript and may need some
+    tweaking for reuse.
     """
     cmap = sns.color_palette("Paired", 10)
     fig = plt.figure(figsize=(6 * 1.2, 6))
-    gs = GridSpec(1, 1, wspace=0.2, hspace=0.5)
-    ax1 = plt.subplot(gs[0, 0])
+    grid = GridSpec(1, 1, wspace=0.2, hspace=0.5)
+    ax1 = plt.subplot(grid[0, 0])
 
     ax1.plot(concentrations, velocity, c=cmap[1])
     ax1.set_xscale('log')
@@ -237,9 +232,10 @@ def plot_fluxes_and_velocity(concentrations, directional_flux, reciprocating_flu
         ax.spines["top"].set_visible(False)
         ax.xaxis.labelpad = 15
         ax.yaxis.labelpad = 15
-    if label:
-        ax.annotate(r'{}'.format(label), xy=(0.5, 0.5), xytext=(
-            0.18, 0.70), xycoords='figure fraction', fontsize=20)
+        if label:
+            ax.annotate(r'{}'.format(label), xy=(0.5, 0.5), 
+                        xytext=(0.18, 0.70), xycoords='figure fraction', 
+                        fontsize=20)
     threshold_labels = ['Directional', 'Reciprocating']
     linestyles = ['-', '--']
     colors = [cmap[3], cmap[3]]
@@ -263,23 +259,17 @@ def plot_fluxes_and_velocity(concentrations, directional_flux, reciprocating_flu
 def plot_flux_over_threshold(concentrations, number_above_thresholds, colors, names,
                              threshold_labels=None, xmin=10 ** -6, xmax=10 ** -2, ymin=0, ymax=140):
     """
-
-    :param concentrations:
-    :param number_above_thresholds:
-    :param colors:
-    :param names:
-    :param threshold_labels:
-    :param xmin:
-    :param xmax:
-    :param ymin:
-    :param ymax:
+    Plots the number of angles over a specified flux threshold.
+    Like the previous function, this is setup to replicate manuscript figures.
     """
     fig = plt.figure(figsize=(6 * 1.2, 6))
-    gs = GridSpec(1, 1, wspace=0.2, hspace=0.5)
-    ax = plt.subplot(gs[0, 0])
+    grid = GridSpec(1, 1, wspace=0.2, hspace=0.5)
+    ax = plt.subplot(grid[0, 0])
     linestyles = ['-', '--']
-    # For simplicity, I think I should enforce paired plotting. That is, to plot the number of angles over two
-    # thresholds for each system, with the line styles given above. We should be able to handle an arbitrary number of
+    # For simplicity, I think I should enforce paired plotting. 
+    # That is, to plot the number of angles over two
+    # thresholds for each system, with the line styles given above. 
+    # We should be able to handle an arbitrary number of
     # pairs.
     pairs = [number_above_thresholds[x:x + 2]
              for x in range(0, len(number_above_thresholds), 2)]
@@ -293,11 +283,13 @@ def plot_flux_over_threshold(concentrations, number_above_thresholds, colors, na
     if threshold_labels:
         for threshold_label, style in zip(threshold_labels, linestyles):
             artists.append(plt.Line2D(
-                    (0, 1), (0, 0), color='k', linestyle=style))
+                                      (0, 1), (0, 0), color='k', 
+                                      linestyle=style))
 
-        ax.legend([handle for i, handle in enumerate(handles) if i in display] + artists,
-                  [label for i, label in enumerate(
-                          labels) if i in display] + threshold_labels,
+        ax.legend([handle for i, handle in enumerate(handles) if i in display] + 
+                  artists,
+                  [label for i, label in enumerate(labels) if i in display] + 
+                  threshold_labels,
                   loc='upper left', frameon=True, framealpha=1.0, edgecolor='k')
     ax.set_xlabel('Substrate concentration (M)')
     ax.set_ylabel('Number over threshold')
@@ -312,22 +304,12 @@ def plot_load_over_threshold(concentrations, number_above_thresholds, colors, na
                              annotation=None, annotation_x=None, annotation_y=None,
                              xmin=10 ** -6, xmax=10 ** -2, ymin=0, ymax=140):
     """
-
-    :param concentrations:
-    :param number_above_thresholds:
-    :param colors:
-    :param names:
-    :param annotation:
-    :param annotation_x:
-    :param annotation_y:
-    :param xmin:
-    :param xmax:
-    :param ymin:
-    :param ymax:
+    Plots the number of angles over a specified load threshold.
+    Like the previous function, this is setup to replicate manuscript figures.
     """
     fig = plt.figure(figsize=(6 * 1.2, 6))
-    gs = GridSpec(1, 1, wspace=0.2, hspace=0.5)
-    ax = plt.subplot(gs[0, 0])
+    grid = GridSpec(1, 1, wspace=0.2, hspace=0.5)
+    ax = plt.subplot(grid[0, 0])
 
     for system, color, name in zip(number_above_thresholds, colors, names):
         ax.step(concentrations, system, ls='-', c=color, label=name)
@@ -346,14 +328,13 @@ def plot_load_over_threshold(concentrations, number_above_thresholds, colors, na
     return fig
 
 
-# Below, these helper functions are necessary for the summary plots that are designed mostly to read in pandas
-# dataframes
+# Below, these helper functions are necessary for the summary plots
+# that read in pandas dataframes.
+
 def return_concentration_slice(df, concentration):
     """
-    This helper function makes slicing dataframes easy.
-    :param df: a dataframe that contains a column named 'Concentration'
-    :param concentration: a target concentration, that will be rounded
-    :return: the dataframe slice at the given concentration
+    This helper function makes slicing dataframes easy because I did not properly
+    round the concentration when creating the data frame.
     """
     tmp = df[np.round(df['Concentration'], 1) == np.round(concentration, 1)]
     return tmp
@@ -361,11 +342,9 @@ def return_concentration_slice(df, concentration):
 
 def return_fluxes_and_velocity(protein, name, concentrations, catalytic_rate=None):
     """
-    This helper function will return the turnover rate and the fluxes over a concentration range.
-    :param protein: one of the recognized protein systems in the class
-    :param name: filename of the torsion
-    :param concentrations: a list concentrations
-    :return:
+    Returns the turnover rate and the fluxes over 
+    a concentration range by running a new Simulation(). This can also be done
+    by creative slicing.
     """
     directional_flux, reciprocating_flux, velocity = [], [], []
     for concentration in concentrations:
@@ -385,11 +364,8 @@ def return_fluxes_and_velocity(protein, name, concentrations, catalytic_rate=Non
 
 def find_above_threshold(df, quantity, threshold):
     """
-
-    :param df:
-    :param quantity:
-    :param threshold:
-    :return:
+    Returns the number of angles over a specified threshold of a given quantity,
+    by slicing the dataframe.
     """
     concentrations = []
     number_above_threshold = []
@@ -403,12 +379,7 @@ def find_above_threshold(df, quantity, threshold):
 
 def data_frame_to_chimera(df, df_index_column, df_target_column, filename, chimera_label):
     """
-
-    :param df:
-    :param df_index_column:
-    :param df_target_column:
-    :param filename:
-    :param chimera_label:
+    Writes data to an attribute file that can be used in Chimera to color a surface.
     """
     file = str(filename) + '.dat'
     f = open(file, 'w')
