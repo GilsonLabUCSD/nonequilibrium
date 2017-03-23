@@ -6,13 +6,11 @@ population distributions.
 """
 
 import math as math
-import matplotlib.pyplot as plt
 import numpy as np
-import scipy as sc
 import seaborn as sns
-from matplotlib.gridspec import GridSpec
 from scipy.ndimage.filters import gaussian_filter
-from aesthetics import paper_plot
+
+from plot import *
 
 class Simulation(object):
     """
@@ -21,7 +19,7 @@ class Simulation(object):
     """
     # This is a complicated class, we want more than seven attributes:
     # pylint: disable=too-many-instance-attributes
-    # To use physically meaningful attribute names (i.e., kT):
+    # To use physically meaningful attribute names (e.g., kT):
     # pylint: disable=C0103
 
     def __init__(self, data_source):
@@ -29,7 +27,7 @@ class Simulation(object):
         These values are assigned to a new object, unless overridden later.
         """
         # Model parameters
-        self.kT = 0.6  # RT = 0.6 kcal per mol
+        self.kT = 0.6  # =def= RT = 0.6 kcal per mol
         # The butane-derived D value is 3 * 10 ** 15, but we've now shown that
         # a lower value can be safely used without changing the results much.
         self.D = 3 * 10 ** 12  # degree**2 per second
@@ -98,7 +96,7 @@ class Simulation(object):
 
     def data_to_energy(self, histogram):
         """
-        This function takes in population histograms from Chris' PKA data and
+        Takes in population histograms and
         (a) smooths them with a Gaussian kernel with width 1;
         (b) eliminates zeros by setting any zero value to the minimum of the data;
         (c) turns the population histograms to energy surfaces.
@@ -120,7 +118,7 @@ class Simulation(object):
 
     def calculate_boltzmann(self):
         """
-        This function calculates the normalized steady state probability density, given populations.
+        Calculates the normalized steady state probability density, given populations.
         """
         boltzmann_unbound = np.exp(-1 * np.array(self.unbound) / self.kT)
         boltzmann_bound = np.exp(-1 * np.array(self.bound) / self.kT)
@@ -129,7 +127,7 @@ class Simulation(object):
 
     def calculate_intrasurface_rates(self, energy_surface):
         """
-        This function calculates intrasurface rates using the energy difference between
+        Calculates intrasurface rates using the energy difference between
         adjacent bins.
         """
 
@@ -149,12 +147,11 @@ class Simulation(object):
 
     def calculate_intrasurface_rates_with_load(self, energy_surface):
         """
-        This function calculates intrasurface rates using the energy difference between
-        adjacent bins,
-        this function is distinct from `calculate_intrasurface_rates` because the load function
+        Calculates intrasurface rates using the energy difference between
+        adjacent bins.
+        This function is distinct from `calculate_intrasurface_rates` because the load function
         has different boundary conditions than the energy function. The energy function has perfect
-        periodic
-        boundary conditions, but the load must continue to decrease or increase across the
+        periodic boundary conditions, but the load must continue to decrease or increase across the
         boundaries.
         """
         surface_with_load = np.hstack(
@@ -183,7 +180,7 @@ class Simulation(object):
 
     def calculate_intersurface_rates(self, unbound_surface, bound_surface):
         """
-        This function calculates the intersurface rates in two ways.
+        Calculates the intersurface rates in two ways:
         For bound to unbound, the rates are calculated according to the energy difference and
         the catalytic rate.
         For unbound to bound, the rates depend on the prefactor and the concentration of substrate.
@@ -200,8 +197,8 @@ class Simulation(object):
 
     def compose_tm(self, u_rm, b_rm, ub_rm, bu_rm):
         """
-        We take the four rate matrices (two single surface and two intersurface) and inject them
-        into the transition matrix.
+        Construct the Markov trnasition matrix from the four rate matrices:
+        Two single surface and two intersurface.
         """
 
         tm = np.zeros((2 * self.bins, 2 * self.bins))
@@ -217,8 +214,6 @@ class Simulation(object):
         """
         The transition matrix is scaled by `dt` so all rows sum to 1 and
         all elements are less than 1.
-        This should not use `self` subobjects, except for `dt`
-        because we are mutating the variables.
         """
 
         row_sums = tm.sum(axis=1, keepdims=True)
@@ -234,8 +229,9 @@ class Simulation(object):
 
     def calculate_eigenvector(self):
         """
-        The eigenvectors and eigenvalues of the transition matrix are computed and the steady-state population is
-        assigned to the eigenvector with an eigenvalue of 1.
+        Calculate the eigenvectors and eigenvalues of the transition matrix, 
+        and the steady-state population is assigned using
+        the eigenvector with an eigenvalue of 1.
         """
 
         self.eigenvalues, eigenvectors = np.linalg.eig(np.transpose(self.tm))
@@ -245,9 +241,13 @@ class Simulation(object):
 
     def calculate_flux(self, ss, tm):
         """
-        This function calculates the intrasurface flux using the steady-state distribution and the transition matrix.
-        The steady-state distribution is a parameter so this function can be run with either the eigenvector-derived
-        steady-state distribution or the interated steady-state distribution.
+        Calculates the intrasurface probability flux using the 
+        steady-state distribution and the transition matrix.
+        The steady-state distribution is a parameter so 
+        this function can be run with either the eigenvector-derived
+        steady-state distribution an interated steady-state distribution.
+        The function to solve for the nonequilibrium steady-state probability
+        distribution is deprecated.
         """
 
         flux_u = np.empty((self.bins))
@@ -270,14 +270,16 @@ class Simulation(object):
                                          ss[i + 1] * tm[i + 1][i] / self.dt)
             if i == 2 * self.bins - 1:
                 flux_b[i - self.bins] = -1 * (
-                    - ss[i] * tm[i][self.bins] / self.dt + ss[self.bins] * tm[self.bins][i] / self.dt)
+                    - ss[i] * tm[i][self.bins] / self.dt + ss[self.bins] 
+                    * tm[self.bins][i] / self.dt)
             else:
                 flux_b[i - self.bins] = -1 * \
                                         (- ss[i] * tm[i][i + 1] / self.dt +
                                          ss[i + 1] * tm[i + 1][i] / self.dt)
         for i in range(self.bins):
             flux_ub[i] = -1 * (
-                - ss[i] * tm[i][i + self.bins] / self.dt + ss[i + self.bins] * tm[i + self.bins][i] / self.dt)
+                - ss[i] * tm[i][i + self.bins] / self.dt + ss[i + self.bins] 
+                * tm[i + self.bins][i] / self.dt)
 
         self.flux_u = flux_u
         self.flux_b = flux_b
@@ -286,18 +288,15 @@ class Simulation(object):
 
 
 
-    def simulate(self, plot=False, user_energies=False, catalysis=True):
+    def simulate(self, plot=False, user_energies=False):
         """
-        Now this function takes in a file(name) and determins the energy surfaces automatically,
-        so I don't forget to do it in an interactive session.
-        This function runs the `simulation` which involves:
-        (a) setting the unbound intrasurface rates,
-        (b) setting the bound intrasurface rates,
-        (c) setting the intersurface rates,
-        (d) composing the transition matrix,
-        (e) calculating the eigenvectors of the transition matrix,
-        (f) calculating the intrasurface flux,
-        and optionally (g) running an interative method to determine the steady-state distribution.
+        Run a "simulation" to determine the motor characteristics of a torsion.
+        (a) set the population surfaces and energies,
+        (b) determine the intrasurface and intersurface transition rates,
+        (c) compose the Markov transition matrix,
+        (d) calculate the eigenvectors of the transition matrix,
+        (e) calculate the intrasurface flux,
+        and optionally (g) plot the results.
         """
         if self.data_source == 'pka_md_data':
             self.dir = './md-data/pka-md-data'
@@ -353,7 +352,6 @@ class Simulation(object):
                 print('Cannot read {} from {}.'.format(self.name, self.dir))
 
             cmap = sns.color_palette("Paired", 10)
-            # self.unbound_clr = cmap[0]
             self.unbound_clr = cmap[3]
             self.bound_clr = cmap[1]
 
@@ -410,15 +408,19 @@ class Simulation(object):
         self.calculate_boltzmann()
         self.calculate_flux(self.ss, self.tm)
         if plot:
-            self.plot_input()
+            plot_input(self)
             if not self.load:
-                self.plot_energy()
+                plot_energy(self)
             else:
-                self.plot_load()
-            self.plot_ss()
-            self.plot_flux()
-            self.plot_intersurface_flux()
+                plot_load(self)
+            plot_ss(self)
+            plot_flux(self)
         return
 
     def load_function(self, x):
+        """
+        Sets a load (torque) that will be added to the underlying energy 
+        surfaces. Writing it as a function, instead of a strict offset,
+        makes it more convenient to deal with the boundary conditions.
+        """
         return x * self.load_slope / self.bins
