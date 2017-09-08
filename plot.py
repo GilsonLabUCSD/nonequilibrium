@@ -11,7 +11,7 @@ import numpy as np
 import seaborn as sns
 from matplotlib.gridspec import GridSpec
 from tqdm import tqdm
-
+from aesthetics import *
 from simulation import *
 
 
