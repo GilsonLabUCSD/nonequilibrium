@@ -1,0 +1,16 @@
+name: motors
+channels:
+  - anaconda
+  - conda-forge
+dependencies:
+  - anaconda::scipy=0.18.1
+  - anaconda::numpy=1.11.3
+  - anaconda::matplotlib=2.0.0
+  - anaconda::pandas=0.19.2
+  - anaconda::ipykernel=4.5.2
+  - anaconda::seaborn=0.7.1
+  - anaconda::tqdm=4.11.2
+  - anaconda::jupyter
+  - anaconda::nb_conda
+  - pip:
+    - git+https://github.com/slochower/nonequilibrium-master@0a2a6aec3b2f6b1b91bf1248d5ae415ed75f13422
