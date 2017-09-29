@@ -38,10 +38,18 @@ perl generate-dihedral-histogram-input-files.pl >> cpptraj.in
 - Files of format `{torsion}{RES}{ID}.dat` that contain two columns: the first column is the angular value (in degrees) of bin $i$, and the second column is the probability of being between bin $i$ and $i+1$ averaged over the trajectory.
 
 ## Step 2: Configure the code
+
+
+Create a conda environment using `conda env create -f build/environment.yaml`.
+
+
+
+
+
 All of the data processing and model-building is carried out in `simulation.py` using the class `Simulation()`. For each system, four pieces of information need to be configured:
 
 1. The path to the torsion histograms (produced in step 1 or otherwise). If the format of the histograms is not as described, the `np.genfromtxt` calls in the function `simulate()` can be modified.
-2. The parameter `C_intesurface` -- which is the same as `k_on` in the manuscript -- the bimolecular on rate for the substrate and enzyme. This should be specified in units of per molar per second.
+2. The parameter `C_intersurface` -- which is the same as `k_on` in the manuscript -- the bimolecular on rate for the substrate and enzyme. This should be specified in units of per molar per second.
 3. The parameter `offset_factor` -- which is the same as `mu_offset^*` in the manuscript -- the effective free energy offset of the apo system. This should be specified in units of kcal per mol.
 4. The parameter `catalytic_rate` -- which is the same as `k_cat` in the manuscript -- the catalytic rate of the enzyme. This should be specified in units of per second.
 
