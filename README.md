@@ -270,3 +270,8 @@ plot_energy(this)
 ![User-energies](images/example-user-energies.png)
 
 # Manifest
+- `build/` - Directory containing script to setup a `conda` environment called `motors` that is used in the notebooks
+- `dihedral-timeseries/` - Data to check the convergence of the angle population histograms
+- `images/` - Figures contained in this file (`README.md`)
+- `md-data/` - Raw angle population histogram data extracted from the simulations
+- `precomputed-pickles/` - Python pickle format files containing flux, torque, and power data across a range of concentrations for the angles
