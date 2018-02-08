@@ -1,10 +1,16 @@
-# Source code for "The ubiquity of directional and reciprocating motion in enzymes out of equilibrium"
+# Source code for "Motor-like properties of non-motor enzymes"
 These `jupyer` notebooks, and associated `python` 3 source code, can be used to
-generate the figures in *The ubiquity of directional and reciprocating motions
-in enzymes out of equilibrium* by Slochower and Gilson, 2017. We have several
+generate the figures in *Motor-like properties of non-motor enzymes* by Slochower and Gilson, 2018. We have several
 other notebooks used to explore the data -- that are not hosted here -- and are
 happy to share them. Please feel free to contact `slochower@gmail.com` for
 details.
+
+## Manuscript
+Archived and current versions of the manuscript are available on bioRxiv.
+- [Version 1, April 19 2017](https://www.biorxiv.org/content/early/2017/04/19/121848)
+- [Version 2, May 26 2017](https://www.biorxiv.org/content/early/2017/05/26/121848)
+- [Version 3, November 7 2017](https://www.biorxiv.org/content/early/2017/11/07/121848)
+- [Version 4, February 7 2018 (to be published in *Biophysical Journal*)](https://www.biorxiv.org/content/early/2018/02/07/121848)
 
 ## Step 0: MD simulations
 This code does not prepare or perform any of the MD simulations. We assume that
@@ -262,3 +268,5 @@ this.simulate(user_energies=True)
 plot_energy(this)
 ```
 ![User-energies](images/example-user-energies.png)
+
+# Manifest
