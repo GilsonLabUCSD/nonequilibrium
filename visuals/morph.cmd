@@ -21,7 +21,7 @@ set subdivision 5
 
 # Create morph #1 -> #0 as #2.
 morph start #0
-morph interpolate #1 frames 120
+morph interpolate #1 frames 30
 morph movie
 
 # Hide unbound model, bound state ribbon, and show just ligand atoms.
@@ -45,7 +45,7 @@ display #2:141; repr bs #2:141; color purple #2:141; color byhet #2:141; center 
 # Setup starting state
 reset start
 ~display #2:141
-surface #2
+# surface #2
 color grey #2
 display #1:AP5
 ribbon #2
@@ -59,23 +59,28 @@ movie record supersample 3
 2dlabel change title visibility show
 
 # Play morph
-trans 0,a #1:AP5 frames 120
-trans 100,s #2 frames 120
-coordset #2 1,60; wait 60
-coordset #2, 61,120; wait 60
+trans 0,a #1:AP5 frames 30; transparency 100,s #2 frames 30
+coordset #2 1,30; wait 30
+~surface #2
+
+# Show rotation
+fly 30 surface residue
+display #2:141; repr bs #2:141; color purple #2:141; color byhet #2:141
+rotation 2 #2:141@CA,CB; rotation 2 1.5 120; wait 120
+savepos after
+
+# Reset view
+fly 30 after surface
 
 # Play backwards
-# trans 100,a #1:AP5 frames 10; ~display #1:AP5; 
-# trans 100,s #2 frames 10; ribbon #2;
-# # display #2:141; repr bs #2:141; color purple #2:141; color byhet #2:141;
-# # rotation 2 #2:141@CA,CB; rotation 2 180 10;
-# coordset #2 120,1; wait 120
+trans 100,a #1:AP5 frames 10; ~display #1:AP5; ~surface #2
+coordset #2 30,1; wait 30
 
-# reset start
-# reset residue 120; wait 120
-fly 120 surface residue
+# Show rotation again
+# fly 30 surface residue
 display #2:141; repr bs #2:141; color purple #2:141; color byhet #2:141
-rotation 2 #2:141@CA,CB; rotation 2 1.5 240; wait 240
+rotation 2 #2:141@CA,CB; rotation 2 1.5 120; wait 120
+
 
 # Extra stationary frames at end avoid compression artifacts on last frame.
 wait 10
