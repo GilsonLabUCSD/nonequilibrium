@@ -1,10 +1,6 @@
-windowsize 800 600
-lighting reflectivity 0
-set bg_color white
+# General setup
 open 4ake
-color #4daf4a #0 
 open 1ake
-color #377eb8 #1
 delete :.B
 addh spec #0&protein hbond false
 addh spec #1&protein hbond false
@@ -12,44 +8,34 @@ mmaker #0 #1
 center
 turn y 60
 
-# Turn on silhouette edges.
+# Window appearance
+windowsize 800 600
+lighting reflectivity 0
+set bg_color white
 set silhouette
 set silhouette_width 1.5
 
-# Increase subdivision quality to 5 for smoother ribbon, atoms, bonds.
-set subdivision 5
+# Model appearance
+color #4daf4a #0 
+color #377eb8 #1
 
-# Create morph #1 -> #0 as #2.
+# Setup morph
 morph start #0
 morph interpolate #1 frames 30
 morph movie
-
-# Hide unbound model, bound state ribbon, and show just ligand atoms.
-~display #1; ~ribbon #1
-~display #0; ~ribbon #0
-
-# Color background, morph ribbon, and ligand.
-display #1:AP5
-color red #1:AP5
-
-# Ligand in ball and stick style.
-repr bs #1:AP5
-savepos start
-
-display #2:141; repr bs #2:141; color purple #2:141; color byhet #2:141; center #2:141; turn z -30; move x -10; move y 2; scale 2.3; savepos residue
-
 
 # Add caption.
 2dlabel create title text "Binding and release of substrate leads to directional motion" xpos 0.1 ypos 0.92 color black
 
 # Setup starting state
-reset start
-~display #2:141
-# surface #2
-color grey #2
-display #1:AP5
-ribbon #2
-savepos surface
+~display #1; ~ribbon #1
+~display #0; ~ribbon #0
+color grey #2; ribbon #2
+
+# Color ligands and highlighted residue
+display #1:AP5; repr bs #1:AP5; color red #1:AP5;
+display #2:141; repr bs #2:141; color purple #2:141
+color byhet #2:141
 
 # Start recording
 movie record supersample 3 
@@ -58,29 +44,49 @@ movie record supersample 3
 # Play movie sequence
 2dlabel change title visibility show
 
+# coordset #2 10
+# rotation 1 1
+# coordset #2 2
+# rotation 2 1 1
+
 # Play morph
-trans 0,a #1:AP5 frames 30; transparency 100,s #2 frames 30
-coordset #2 1,30; wait 30
-~surface #2
+trans 0,a #1:AP5 frames 30; coordset #2 1,30; wait 30
 
 # Show rotation
-fly 30 surface residue
-display #2:141; repr bs #2:141; color purple #2:141; color byhet #2:141
+# Setup bond rotation
 rotation 2 #2:141@CA,CB; rotation 2 1.5 120; wait 120
-savepos after
+~rotation 2
 
-# Reset view
-fly 30 after surface
+# End first morph and draw with closed state
+ribbon #1; color grey #1; color red #1:AP5; morph done
 
-# Play backwards
-trans 100,a #1:AP5 frames 10; ~display #1:AP5; ~surface #2
-coordset #2 30,1; wait 30
+# Modify coordinates of model #0 and #1
+rotation 3 #0:141@CA,CB; rotation 3 180; rotation 4 #1:141@CA,CB; rotation 4 180; display #1:141; repr bs #1:141; color purple #1:141; color byhet #1:141
+~rotation 3; ~rotation 4
+
+# Creat a new morph
+morph start #1 name backwards
+morph interpolate #0 frames 30 name backwards
+morph movie name backwards
+
+# Setup starting state
+~ribbon #1
+~display #0; ~ribbon #0
+color grey #2; ribbon #2
+
+# Color ligands and highlighted residue
+display #1:AP5; repr bs #1:AP5; color red #1:AP5;
+~display #1:141
+display #2:141; repr bs #2:141; color purple #2:141; color byhet #2:141
+
+# Play new morph
+trans 100,a #1:AP5 frames 30; wait 30
+~display #1:AP5;
+coordset #2 1,30; wait 30
 
 # Show rotation again
-# fly 30 surface residue
-display #2:141; repr bs #2:141; color purple #2:141; color byhet #2:141
 rotation 2 #2:141@CA,CB; rotation 2 1.5 120; wait 120
-
+~rotation 2
 
 # Extra stationary frames at end avoid compression artifacts on last frame.
 wait 10
