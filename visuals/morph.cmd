@@ -44,11 +44,7 @@ movie record supersample 3
 # Play movie sequence
 2dlabel change title visibility show
 
-# coordset #2 10
-# rotation 1 1
-# coordset #2 2
-# rotation 2 1 1
-
+trans 100,a #1:AP5
 # Play morph
 trans 0,a #1:AP5 frames 30; coordset #2 1,30; wait 30
 
