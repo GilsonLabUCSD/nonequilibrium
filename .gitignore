@@ -53,3 +53,5 @@ Thumbs.db
 
 # jupyter notebook checkpoints
 .ipynb_checkpoints
+
+# visuals/morph-open-closed/
